@@ -10,13 +10,14 @@ namespace WordleGame
 
         [Header("Result Modal Window")]
         [SerializeField] private GameObject resultPanel;
-        [SerializeField] private Transform resultCardTransform; // Transform объекта Card для анимации
+        [SerializeField] private Transform resultCardTransform;
         [SerializeField] private TextMeshProUGUI resultTitleText;
         [SerializeField] private TextMeshProUGUI resultSecretWordText;
         [SerializeField] private TextMeshProUGUI resultRewardText;
         [SerializeField] private TextMeshProUGUI resultStreakText;
-        [SerializeField] private GameObject statsPanel;
+
         [Header("Panels & Controls")]
+        [SerializeField] private GameObject statsPanel;
         [SerializeField] private GameObject mainMenuPanel;
         [SerializeField] private GameObject homeButton;
 
@@ -51,9 +52,12 @@ namespace WordleGame
             HideResultModal();
             ShowMainMenu(true);
 
-            // На старте гарантированно скрываем лидерборд
+            // Гарантированно скрываем модальные панели на старте
             if (leaderboardPanel != null)
                 leaderboardPanel.SetActive(false);
+
+            if (statsPanel != null)
+                statsPanel.SetActive(false);
         }
 
         public void ShowLeaderboard(bool show)
@@ -71,10 +75,33 @@ namespace WordleGame
             }
         }
 
-        // Метод для привязки на кнопку закрытия (крестик) в инспекторе
+        // Метод для привязки на кнопку закрытия лидерборда в инспекторе
         public void CloseLeaderboard()
         {
             ShowLeaderboard(false);
+        }
+
+        // ПРЯМЫЕ МЕТОДЫ ДЛЯ КНОПОК СТАТИСТИКИ
+        public void OpenStatsModal()
+        {
+            ShowStatsModal(true);
+        }
+
+        public void CloseStatsModal()
+        {
+            ShowStatsModal(false);
+        }
+
+        public void ShowStatsModal(bool show)
+        {
+            if (statsPanel != null)
+            {
+                statsPanel.SetActive(show);
+            }
+            else
+            {
+                Debug.LogError("[UIManager] statsPanel РАВЕН NULL! Назначь его в Инспекторе на объекте UIManager!");
+            }
         }
 
         public void ShowWinModal(string rewardMessage, int currentStreak)
@@ -82,7 +109,7 @@ namespace WordleGame
             if (resultPanel == null) return;
 
             resultTitleText.text = "ПОБЕДА!";
-            resultTitleText.color = new Color(0.42f, 0.67f, 0.39f); // Зеленый Wordle
+            resultTitleText.color = new Color(0.42f, 0.67f, 0.39f);
 
             resultSecretWordText.gameObject.SetActive(false);
             resultRewardText.text = rewardMessage;
@@ -149,14 +176,7 @@ namespace WordleGame
                 resultCardTransform.localScale = targetScale;
             }
         }
-        public void ShowStatsModal(bool show)
-        {
-            if (statsPanel != null)
-            {
-                statsPanel.SetActive(show);
-                // При включении OnEnable у StatisticsUI сработает автоматически и обновит данные
-            }
-        }
+
         public void ShowInfoModal(string title, string message)
         {
             if (resultPanel == null) return;
@@ -198,7 +218,7 @@ namespace WordleGame
 
         public void UpdateStreakUI()
         {
-            int currentStreak = PlayerPrefs.GetInt("WinStreak", 0);
+            int currentStreak = SaveManager.CurrentData != null ? SaveManager.CurrentData.currentWinStreak : 0;
 
             if (streakText != null)
             {
@@ -238,10 +258,13 @@ namespace WordleGame
 
         private void Update()
         {
-            // Обработка клавиши ESC: закрывает лидерборд, либо модальное окно результата
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-                if (leaderboardPanel != null && leaderboardPanel.activeSelf)
+                if (statsPanel != null && statsPanel.activeSelf)
+                {
+                    CloseStatsModal();
+                }
+                else if (leaderboardPanel != null && leaderboardPanel.activeSelf)
                 {
                     CloseLeaderboard();
                 }

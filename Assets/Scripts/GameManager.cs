@@ -208,31 +208,33 @@ namespace WordleGame
             GameData data = SaveManager.CurrentData;
             if (data == null) return;
 
-            data.gamesPlayed++;
+            // При ЗАВЕРШЕНИИ ЛЮБОЙ ИГРЫ (и победа, и поражение):
+            SaveManager.CurrentData.gamesPlayed++;
 
             if (isWin)
             {
-                data.totalWins++;
-                data.currentWinStreak++;
+                SaveManager.CurrentData.totalWins++;
+                SaveManager.CurrentData.currentWinStreak++;
 
-                if (data.currentWinStreak > data.maxWinStreak)
+                // Обновляем максимальную серию
+                if (SaveManager.CurrentData.currentWinStreak > SaveManager.CurrentData.maxWinStreak)
                 {
-                    data.maxWinStreak = data.currentWinStreak;
+                    SaveManager.CurrentData.maxWinStreak = SaveManager.CurrentData.currentWinStreak;
                 }
 
-                // Записываем распределение попыток (1-6)
-                int index = attemptsCount - 1;
-                if (index >= 0 && index < data.guessDistribution.Length)
+                // Записываем попытку в гистограмму (attemptsCount - от 1 до 6)
+                int attemptIndex = attemptsCount - 1; // ИСПРАВЛЕНО: с currentAttempt на attemptsCount
+                if (attemptIndex >= 0 && attemptIndex < 6)
                 {
-                    data.guessDistribution[index]++;
+                    SaveManager.CurrentData.guessDistribution[attemptIndex]++;
                 }
             }
-            else
+            else // Поражение
             {
-                data.currentWinStreak = 0;
+                SaveManager.CurrentData.currentWinStreak = 0; // Сбрасываем текущую серию
             }
 
-            wins = data.totalWins;
+            // ОБЯЗАТЕЛЬНО сохраняем изменения на диск!
             SaveManager.Save();
         }
         private void LoadWordsFromFile()

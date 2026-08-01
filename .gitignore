@@ -1,0 +1,19 @@
+# Unity временные папки
+/[L|l]ibrary/
+/[T|t]emp/
+/[O|o]bj/
+/[B|b]uild/
+/[B|b]uilds/
+/[L|l]ogs/
+/[U|u]ser[S|s]ettings/
+/[M|m]emoryCaptures/
+
+# Файлы IDE (Visual Studio / VS Code / Rider)
+.vs/
+.idea/
+*.csproj
+*.sln
+*.unityproj
+*.suo
+*.user
+*.userprefs

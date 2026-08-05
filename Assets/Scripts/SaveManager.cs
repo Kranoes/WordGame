@@ -4,49 +4,67 @@ namespace WordleGame
 {
     public static class SaveManager
     {
-        private const string SaveKey = "Wordle_Player_Save";
+        private const string SAVE_KEY = "Wordle_SaveData_v1";
+        private static GameData _currentData;
 
-        // Глобальный доступ к данным из любого скрипта игры
-        public static GameData CurrentData { get; private set; }
+        public static GameData CurrentData
+        {
+            get
+            {
+                if (_currentData == null)
+                {
+                    Load();
+                }
+                return _currentData;
+            }
+        }
 
-        // Вызывать один раз при самом старте игры (например, в Awake вашего GameManager)
         public static void Initialize()
         {
             Load();
         }
 
-        // Сохранить текущее состояние
         public static void Save()
         {
-            if (CurrentData == null) return;
+            if (_currentData == null) return;
 
-            // Переводим объект с данными в JSON-строку и сохраняем
-            string json = JsonUtility.ToJson(CurrentData);
-            PlayerPrefs.SetString(SaveKey, json);
+            // 1. Сериализуем объект C# в JSON-строку
+            string json = JsonUtility.ToJson(_currentData);
+
+            // 2. Записываем в localStorage браузера через PlayerPrefs
+            PlayerPrefs.SetString(SAVE_KEY, json);
             PlayerPrefs.Save();
         }
 
-        // Загрузить данные из памяти
         public static void Load()
         {
-            if (PlayerPrefs.HasKey(SaveKey))
+            if (PlayerPrefs.HasKey(SAVE_KEY))
             {
-                string json = PlayerPrefs.GetString(SaveKey);
-                CurrentData = JsonUtility.FromJson<GameData>(json);
+                string json = PlayerPrefs.GetString(SAVE_KEY);
+
+                try
+                {
+                    // 3. Десериализуем JSON-строку обратно в поле _currentData
+                    _currentData = JsonUtility.FromJson<GameData>(json);
+                }
+                catch (System.Exception ex)
+                {
+                    Debug.LogWarning($"[SaveManager] Ошибка чтения JSON: {ex.Message}. Данные пересозданы.");
+                    _currentData = null;
+                }
             }
-            else
+
+            // Если сохранения нет, произошел сбой или FromJson вернул null
+            if (_currentData == null)
             {
-                // Если игры ещё не было — создаём абсолютно чистый профиль
-                CurrentData = new GameData();
-                Save();
+                _currentData = new GameData();
             }
         }
 
-        // Метод для тестов (чтобы сбросить прогресс одной кнопкой)
-        public static void DeleteSave()
+        public static void ResetData()
         {
-            PlayerPrefs.DeleteKey(SaveKey);
-            CurrentData = new GameData();
+            PlayerPrefs.DeleteKey(SAVE_KEY);
+            _currentData = new GameData();
             Save();
         }
     }

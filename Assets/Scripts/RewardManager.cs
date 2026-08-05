@@ -43,8 +43,15 @@ namespace WordleGame
         public static void GrantDailyWinReward(int attempt, out int droppedCoins)
         {
             droppedCoins = GetCoinsByAttempt(attempt);
+
+            if (SaveManager.CurrentData == null) return;
+
             SaveManager.CurrentData.coins += droppedCoins;
-            SaveManager.CurrentData.lastDailyCaseDate = System.DateTime.UtcNow.ToString("yyyy-MM-dd");
+            SaveManager.CurrentData.lastDailyCaseDate = DateTime.UtcNow.ToString("yyyy-MM-dd");
+
+            // Обязательно сохраняем и обновляем UI
+            SaveManager.Save();
+            UIManager.Instance?.UpdateCurrencyUI();
         }
 
         /// <summary>
@@ -52,7 +59,10 @@ namespace WordleGame
         /// </summary>
         public static bool TryGrantFreePlayReward(int attempt, out int droppedCoins)
         {
-            string today = System.DateTime.UtcNow.ToString("yyyy-MM-dd");
+            droppedCoins = 0;
+            if (SaveManager.CurrentData == null) return false;
+
+            string today = DateTime.UtcNow.ToString("yyyy-MM-dd");
             if (SaveManager.CurrentData.lastFreePlayCaseDate != today)
             {
                 SaveManager.CurrentData.lastFreePlayCaseDate = today;
@@ -64,12 +74,16 @@ namespace WordleGame
                 droppedCoins = GetCoinsByAttempt(attempt);
                 SaveManager.CurrentData.coins += droppedCoins;
                 SaveManager.CurrentData.freeCasesOpenedToday++;
+
+                // Обязательно сохраняем и обновляем UI
+                SaveManager.Save();
+                UIManager.Instance?.UpdateCurrencyUI();
                 return true;
             }
 
-            droppedCoins = 0;
             return false;
         }
+
         public static int GetCoinsByAttempt(int attempt)
         {
             return attempt switch

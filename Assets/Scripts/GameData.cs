@@ -17,6 +17,15 @@ namespace WordleGame
         public int totalWins;
         public int gamesPlayed;                      // Имя приведено в соответствие с StatisticsUI
         public int[] guessDistribution = new int[6]; // Победы по 1..6 попыткам
+                                                     // Настройки аудио и отклика
+                                                     // Аудио (значения от 0.0f до 1.0f)
+        public float musicVolume = 1f;
+        public float sfxVolume = 1f;
+        public float uiSfxVolume = 1f;
+
+        public bool isVibrationEnabled = true;
+        public bool isLowGraphics = false;
+        public List<string> redeemedPromoCodes = new List<string>();
 
         // Магазин и кастомизация
         public string currentActiveSkinID = "Default";

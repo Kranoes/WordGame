@@ -35,6 +35,11 @@ namespace WordleGame
         [Header("Leaderboard Panel")]
         [SerializeField] private GameObject leaderboardPanel;
 
+        [Header("Settings Panel")]
+        [SerializeField] private GameObject settingsPanel;
+
+        [SerializeField] private DailyRewardPanelUI dailyRewardPanel;
+
         private readonly string[] winMessages = { "Хорошая работа!", "Так держать!", "Блестяще!", "Гениально!", "Вы мастер слов!" };
         private readonly string[] loseMessages = { "Не повезло...", "Попробуй ещё раз!", "Упс, почти получилось!" };
 
@@ -55,11 +60,38 @@ namespace WordleGame
             // Гарантированно скрываем модальные панели на старте
             if (leaderboardPanel != null)
                 leaderboardPanel.SetActive(false);
-
+            if (settingsPanel != null)
+                settingsPanel.SetActive(false);
             if (statsPanel != null)
                 statsPanel.SetActive(false);
+            if (DailyRewardManager.CanClaimReward())
+            {
+                if (dailyRewardPanel != null)
+                {
+                    dailyRewardPanel.gameObject.SetActive(true);
+                }
+            }
+        }
+        public void ShowSettingsModal(bool show)
+        {
+            if (settingsPanel != null)
+            {
+                settingsPanel.SetActive(show);
+            }
+            else
+            {
+                Debug.LogError("[UIManager] settingsPanel РАВЕН NULL! Назначь его в Инспекторе на объекте UIManager!");
+            }
+        }
+        public void OpenSettingsModal()
+        {
+            ShowSettingsModal(true);
         }
 
+        public void CloseSettingsModal()
+        {
+            ShowSettingsModal(false);
+        }
         public void ShowLeaderboard(bool show)
         {
             if (leaderboardPanel != null)
@@ -271,6 +303,10 @@ namespace WordleGame
                 else if (resultPanel != null && resultPanel.activeSelf)
                 {
                     HideResultModal();
+                }
+                else if (settingsPanel != null && settingsPanel.activeSelf)
+                {
+                    CloseSettingsModal();
                 }
             }
         }

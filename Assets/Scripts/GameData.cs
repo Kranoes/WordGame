@@ -18,7 +18,8 @@ namespace WordleGame
         public int gamesPlayed;                      // Имя приведено в соответствие с StatisticsUI
         public int[] guessDistribution = new int[6]; // Победы по 1..6 попыткам
                                                      // Настройки аудио и отклика
-                                                     // Аудио (значения от 0.0f до 1.0f)
+        public int loginStreak = 0;             // Текущий день серии (1..7)
+        public string lastClaimedRewardDate = "";
         public float musicVolume = 1f;
         public float sfxVolume = 1f;
         public float uiSfxVolume = 1f;

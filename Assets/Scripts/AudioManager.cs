@@ -14,6 +14,10 @@ namespace WordleGame
         [Header("Default UI Sounds")]
         [SerializeField] private AudioClip defaultButtonClickSound;
 
+        public AudioSource MusicSource => musicSource;
+        public AudioSource SfxSource => sfxSource;
+        public AudioSource UiSfxSource => uiSfxSource;
+
         [Header("Game SFX Clips")]
         public AudioClip keyTapClip;
         public AudioClip wordErrorClip;
@@ -38,7 +42,11 @@ namespace WordleGame
 
         private void Start()
         {
-            ApplyAllVolumes();
+            //  ак только AudioManager готов к работе, запрашиваем применение сохраненной громкости
+            if (SettingsManager.Instance != null)
+            {
+                SettingsManager.Instance.ApplySettings();
+            }
         }
 
         public void ApplyAllVolumes()

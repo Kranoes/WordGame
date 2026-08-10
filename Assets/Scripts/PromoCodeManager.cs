@@ -59,6 +59,10 @@ namespace WordleGame
                 }
                 data.redeemedPromoCodes.Add(upperCode);
 
+                // Записываем данные в файл/PlayerPrefs и перерисовываем баланс на экране
+                SaveManager.Save();
+                UIManager.Instance?.UpdateCurrencyUI();
+
                 message = promoInfo.RewardText;
                 return true;
             }

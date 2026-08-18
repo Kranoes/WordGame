@@ -29,18 +29,41 @@ namespace WordleGame
         {
             LoadSettingsToUI();
 
+            // Автоматически подписываем события
+            UnsubscribeUI();
+            SubscribeUI();
+
             if (promoStatusText != null) promoStatusText.text = string.Empty;
+        }
+
+        private void OnDisable()
+        {
+            UnsubscribeUI();
+
+            // Сохраняем на диск при закрытии панели
+            SaveManager.Save();
+        }
+
+        private void SubscribeUI()
+        {
+            if (musicSlider != null) musicSlider.onValueChanged.AddListener(OnMusicVolumeChanged);
+            if (sfxSlider != null) sfxSlider.onValueChanged.AddListener(OnSfxVolumeChanged);
+            if (uiSfxSlider != null) uiSfxSlider.onValueChanged.AddListener(OnUiSfxVolumeChanged);
+            if (vibrationToggle != null) vibrationToggle.onValueChanged.AddListener(OnVibrationToggled);
 
             if (fpsSwitch != null) fpsSwitch.OnFpsChanged += OnFpsSwitchChanged;
             if (closeButton != null) closeButton.onClick.AddListener(CloseWindow);
         }
 
-        private void OnDisable()
+        private void UnsubscribeUI()
         {
+            if (musicSlider != null) musicSlider.onValueChanged.RemoveListener(OnMusicVolumeChanged);
+            if (sfxSlider != null) sfxSlider.onValueChanged.RemoveListener(OnSfxVolumeChanged);
+            if (uiSfxSlider != null) uiSfxSlider.onValueChanged.RemoveListener(OnUiSfxVolumeChanged);
+            if (vibrationToggle != null) vibrationToggle.onValueChanged.RemoveListener(OnVibrationToggled);
+
             if (fpsSwitch != null) fpsSwitch.OnFpsChanged -= OnFpsSwitchChanged;
             if (closeButton != null) closeButton.onClick.RemoveListener(CloseWindow);
-
-            SaveManager.Save();
         }
 
         private void LoadSettingsToUI()
@@ -48,6 +71,7 @@ namespace WordleGame
             GameData data = SaveManager.CurrentData;
             if (data == null) return;
 
+            // Выставляем визуальное положение слайдеров без срабатывания ивентов
             if (musicSlider != null) musicSlider.SetValueWithoutNotify(data.musicVolume);
             if (sfxSlider != null) sfxSlider.SetValueWithoutNotify(data.sfxVolume);
             if (uiSfxSlider != null) uiSfxSlider.SetValueWithoutNotify(data.uiSfxVolume);
@@ -62,6 +86,7 @@ namespace WordleGame
 
             ApplyGraphicsSettings(data.isLowGraphics);
 
+            // Принудительно отдаем сохраненный звук в AudioManager
             AudioManager.Instance?.SetMusicVolume(data.musicVolume);
             AudioManager.Instance?.SetSfxVolume(data.sfxVolume);
             AudioManager.Instance?.SetUiSfxVolume(data.uiSfxVolume);

@@ -45,13 +45,9 @@ namespace WordleGame
         private void Start()
         {
             gameActive = false;
-
             wins = SaveManager.CurrentData.totalWins;
 
-            RewardManager.CheckAndGrantDailyLogin();
             UpdateScoreUI();
-
-            // Принудительно включаем главное меню при старте сцены
             UIManager.Instance?.ShowMainMenu(true);
         }
 
@@ -113,12 +109,9 @@ namespace WordleGame
 
             string upperSecret = secretWord.ToUpper();
 
-            // Проверяем, есть ли еще свободная позиция в текущей строке
             if (currentCol < WordLength && currentCol < upperSecret.Length)
             {
                 char correctLetter = upperSecret[currentCol];
-
-                // Имитируем нажатие правильной буквы
                 OnLetterPressed(correctLetter);
                 return true;
             }
@@ -130,7 +123,6 @@ namespace WordleGame
         {
             currentMode = mode;
 
-            // Обновляем видимость кнопок подсказок
             HintManager.Instance?.UpdateHintButtonsVisibility(currentMode);
 
             if (currentMode == GameMode.Daily)
@@ -203,12 +195,12 @@ namespace WordleGame
                 cells[currentRow, currentCol].Highlight(true);
             }
         }
+
         private void RecordGameResult(bool isWin, int attemptsCount)
         {
             GameData data = SaveManager.CurrentData;
             if (data == null) return;
 
-            // При ЗАВЕРШЕНИИ ЛЮБОЙ ИГРЫ (и победа, и поражение):
             SaveManager.CurrentData.gamesPlayed++;
 
             if (isWin)
@@ -216,27 +208,25 @@ namespace WordleGame
                 SaveManager.CurrentData.totalWins++;
                 SaveManager.CurrentData.currentWinStreak++;
 
-                // Обновляем максимальную серию
                 if (SaveManager.CurrentData.currentWinStreak > SaveManager.CurrentData.maxWinStreak)
                 {
                     SaveManager.CurrentData.maxWinStreak = SaveManager.CurrentData.currentWinStreak;
                 }
 
-                // Записываем попытку в гистограмму (attemptsCount - от 1 до 6)
-                int attemptIndex = attemptsCount - 1; // ИСПРАВЛЕНО: с currentAttempt на attemptsCount
+                int attemptIndex = attemptsCount - 1;
                 if (attemptIndex >= 0 && attemptIndex < 6)
                 {
                     SaveManager.CurrentData.guessDistribution[attemptIndex]++;
                 }
             }
-            else // Поражение
+            else
             {
-                SaveManager.CurrentData.currentWinStreak = 0; // Сбрасываем текущую серию
+                SaveManager.CurrentData.currentWinStreak = 0;
             }
 
-            // ОБЯЗАТЕЛЬНО сохраняем изменения на диск!
             SaveManager.Save();
         }
+
         private void LoadWordsFromFile()
         {
             TextAsset wordsFile = Resources.Load<TextAsset>("words");
@@ -268,7 +258,6 @@ namespace WordleGame
             for (int i = 0; i < WordLength; i++)
                 word += cells[currentRow, i].GetLetter();
 
-            // 1. ОШИБКА: Слова нет в словаре
             if (!wordPool.Contains(word))
             {
                 Coroutine[] shakeCoroutines = new Coroutine[WordLength];
@@ -289,7 +278,6 @@ namespace WordleGame
                 yield break;
             }
 
-            // 2. УСПЕШНАЯ ПРОВЕРКА: Поочередный переворот ячеек
             attempts++;
             LetterState[] states = WordChecker.EvaluateWord(word, secretWord);
 
@@ -302,8 +290,6 @@ namespace WordleGame
 
             yield return new WaitForSeconds(0.30f);
 
-            // Проверяем победу
-            // Проверяем победу
             bool isWin = true;
             foreach (var state in states)
             {
@@ -312,41 +298,38 @@ namespace WordleGame
 
             if (isWin)
             {
-                // Записываем статистику победы
                 RecordGameResult(true, attempts);
 
                 string rewardMessage = "";
-                if (currentMode == GameMode.Daily)
+                if (RewardManager.GrantWinReward(currentMode, attempts, out int droppedCoins))
                 {
-                    RewardManager.GrantDailyWinReward(attempts, out int droppedCoins);
-                    rewardMessage = $"+{droppedCoins} монет!";
+                    if (currentMode == GameMode.Daily)
+                        rewardMessage = $"+{droppedCoins} монет!";
+                    else
+                        rewardMessage = $"+{droppedCoins} монет! ({SaveManager.CurrentData.freeCasesOpenedToday}/5)";
                 }
                 else
                 {
-                    if (RewardManager.TryGrantFreePlayReward(attempts, out int droppedCoins))
-                        rewardMessage = $"+{droppedCoins} монет! ({SaveManager.CurrentData.freeCasesOpenedToday}/5)";
-                    else
+                    if (currentMode == GameMode.FreePlay && !RewardManager.CanGetFreePlayReward())
                         rewardMessage = "Лимит кейсов на сегодня исчерпан";
+                    else if (currentMode == GameMode.Daily)
+                        rewardMessage = "Награда за сегодня уже была получена";
                 }
 
                 UpdateScoreUI();
 
-                // Показываем модальное окно победы и передаем актуальный currentWinStreak
                 gameActive = false;
                 UIManager.Instance?.ShowWinModal(rewardMessage, SaveManager.CurrentData.currentWinStreak);
             }
             else if (attempts >= MaxAttempts)
             {
-                // Записываем статистику поражения
                 RecordGameResult(false, attempts);
 
-                // Показываем модальное окно поражения и замораживаем ввод
                 gameActive = false;
                 UIManager.Instance?.ShowLoseModal(secretWord);
             }
             else
             {
-                // Переход на новую строку
                 currentRow++;
                 currentCol = 0;
                 cells[currentRow, 0].Highlight(true);
@@ -364,31 +347,24 @@ namespace WordleGame
 
             if (currentMode == GameMode.Daily)
             {
-                // Формируем численный seed на основе текущей даты в UTC
                 string dateStr = System.DateTime.UtcNow.ToString("yyyyMMdd");
                 int dateSeed = int.Parse(dateStr);
 
-                // Используем локальный System.Random — он изолирован и не сбивает глобальный рандом Unity
                 System.Random dailyRandom = new System.Random(dateSeed);
                 secretWord = wordPool[dailyRandom.Next(0, wordPool.Count)];
             }
             else
             {
-                // Для обычного режима используем стандартный случайный выбор Unity
                 secretWord = wordPool[UnityEngine.Random.Range(0, wordPool.Count)];
             }
 
             Debug.Log($"[GameManager] Режим: {currentMode}. Загаданное слово: {secretWord}");
         }
-        /// <summary>
-        /// Отменяет последнюю потраченную попытку и очищает строку
-        /// </summary>
+
         public bool GrantExtraAttempt()
         {
             if (attempts <= 0) return false;
 
-            // Если раунд завершился поражением (gameActive == false), сбрасываем текущую строчку currentRow.
-            // Если раунд еще идет (gameActive == true), currentRow указывает на новую пустую строку, поэтому сбрасываем currentRow - 1.
             int targetRow = !gameActive ? (currentRow < MaxAttempts ? currentRow : MaxAttempts - 1)
                                         : (currentRow > 0 ? currentRow - 1 : 0);
 
@@ -409,6 +385,7 @@ namespace WordleGame
 
             return true;
         }
+
         public void ResetGame()
         {
             currentRow = 0;
@@ -427,7 +404,6 @@ namespace WordleGame
             ChooseNewSecretWord();
             UpdateScoreUI();
 
-            // Скрываем окно результатов при начале нового раунда
             UIManager.Instance?.HideResultModal();
 
             isInputBlocked = false;

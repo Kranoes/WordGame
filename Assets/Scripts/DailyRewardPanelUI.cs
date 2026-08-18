@@ -1,68 +1,103 @@
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 namespace WordleGame
 {
     public class DailyRewardPanelUI : MonoBehaviour
     {
-        [Header("Массив из 7 карточек (День 1..7)")]
-        [SerializeField] private DailyRewardCardUI[] dayCards;
-
-        [Header("Кнопки и Тексты")]
-        [SerializeField] private TextMeshProUGUI titleText;
-        [SerializeField] private Button claimButton;
+        [Header("UI References")]
+        [SerializeField] private DailyRewardCardUI[] cards;
         [SerializeField] private Button closeButton;
+
+        [Header("Audio FX")]
+        [SerializeField] private AudioSource audioSource;
+        [SerializeField] private AudioClip coinSound;
+        [SerializeField] private AudioClip rubySound;
+
+        private void Awake()
+        {
+            if (closeButton != null)
+            {
+                closeButton.onClick.AddListener(ClosePanel);
+            }
+
+            if (audioSource == null)
+            {
+                audioSource = GetComponent<AudioSource>();
+            }
+        }
 
         private void OnEnable()
         {
-            UpdateRewardView();
-
-            if (claimButton != null) claimButton.onClick.AddListener(OnClaimClicked);
-            if (closeButton != null) closeButton.onClick.AddListener(CloseWindow);
+            RefreshPanel();
         }
 
-        private void OnDisable()
+        public void OpenPanel()
         {
-            if (claimButton != null) claimButton.onClick.RemoveListener(OnClaimClicked);
-            if (closeButton != null) closeButton.onClick.RemoveListener(CloseWindow);
+            gameObject.SetActive(true);
+            RefreshPanel();
         }
 
-        public void UpdateRewardView()
+        public void RefreshPanel()
         {
-            int currentDay = DailyRewardManager.GetCurrentStreakDay();
-            bool canClaim = DailyRewardManager.CanClaimReward();
-            bool isClaimedToday = !canClaim;
+            if (SaveManager.CurrentData == null) return;
 
-            // Перерисовываем все 7 карточек в соответствии с прогрессом
-            for (int i = 0; i < dayCards.Length; i++)
+            int currentStreak = SaveManager.CurrentData.loginStreak;
+            bool canClaim = RewardManager.CanClaimDailyReward();
+
+            for (int i = 0; i < cards.Length; i++)
             {
-                if (dayCards[i] == null) continue;
+                int dayNumber = i + 1;
+                RewardState state;
 
-                int dayNum = i + 1;
-                DailyReward reward = DailyRewardManager.GetRewardForDay(dayNum);
-                dayCards[i].Setup(dayNum, reward, currentDay, isClaimedToday);
+                if (i < currentStreak)
+                {
+                    state = RewardState.Claimed;
+                }
+                else if (i == currentStreak && canClaim)
+                {
+                    state = RewardState.ReadyToClaim;
+                }
+                else
+                {
+                    state = RewardState.Locked;
+                }
+
+                var (amount, isRuby) = RewardManager.GetDailyRewardConfig(i);
+                cards[i].Setup(dayNumber, amount, isRuby, state, OnClaimButtonClicked);
             }
 
-            if (claimButton != null)
-            {
-                claimButton.interactable = canClaim;
-            }
+            DailyRewardLauncherUI.Instance?.UpdateBadge();
         }
 
-        private void OnClaimClicked()
+        private void OnClaimButtonClicked()
         {
-            if (DailyRewardManager.ClaimReward(out DailyReward reward))
+            if (SaveManager.CurrentData == null) return;
+
+            int currentStreak = SaveManager.CurrentData.loginStreak;
+            var (_, isRuby) = RewardManager.GetDailyRewardConfig(currentStreak);
+
+            if (RewardManager.ClaimDailyReward())
             {
-                AudioManager.Instance?.PlayUiSound();
-                UpdateRewardView(); // Сразу перерисовываем карточки (текущая гаснет)
-                CloseWindow();
+                PlayRewardSound(isRuby);
+                RefreshPanel();
             }
         }
 
-        public void CloseWindow()
+        private void PlayRewardSound(bool isRuby)
+        {
+            AudioClip clipToPlay = isRuby ? rubySound : coinSound;
+
+            if (audioSource != null && clipToPlay != null)
+            {
+                audioSource.PlayOneShot(clipToPlay);
+            }
+        }
+
+        private void ClosePanel()
         {
             gameObject.SetActive(false);
+            DailyRewardLauncherUI.Instance?.UpdateBadge();
         }
     }
 }

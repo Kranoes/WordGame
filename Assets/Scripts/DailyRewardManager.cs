@@ -19,23 +19,19 @@ namespace WordleGame
 
     public static class DailyRewardManager
     {
-        // Таблица 7-дневной сетки наград
         private static readonly DailyReward[] Rewards = new DailyReward[]
- {
-    new DailyReward(1, 100, 0),  // День 1: 100 монет
-    new DailyReward(2, 150, 0),  // День 2: 150 монет
-    new DailyReward(3, 0, 3),    // День 3: 3 рубина (Промежуточный чекпоинт)
-    new DailyReward(4, 200, 0),  // День 4: 200 монет
-    new DailyReward(5, 250, 0),  // День 5: 250 монет
-    new DailyReward(6, 300, 0),  // День 6: 300 монет
-    new DailyReward(7, 0, 10)    // День 7: 10 рубинов (Главная награда недели)
- };
+        {
+            new DailyReward(1, 100, 0),
+            new DailyReward(2, 150, 0),
+            new DailyReward(3, 0, 3),
+            new DailyReward(4, 200, 0),
+            new DailyReward(5, 250, 0),
+            new DailyReward(6, 300, 0),
+            new DailyReward(7, 0, 10)
+        };
 
         public static string TodayDate => DateTime.UtcNow.ToString("yyyy-MM-dd");
 
-        /// <summary>
-        /// Доступна ли сегодня награда
-        /// </summary>
         public static bool CanClaimReward()
         {
             var data = SaveManager.CurrentData;
@@ -44,9 +40,6 @@ namespace WordleGame
             return data.lastClaimedRewardDate != TodayDate;
         }
 
-        /// <summary>
-        /// Возвращает текущий день серии (1..7), который игрок заберет сегодня
-        /// </summary>
         public static int GetCurrentStreakDay()
         {
             var data = SaveManager.CurrentData;
@@ -61,13 +54,11 @@ namespace WordleGame
 
                 if (daysDifference == 1)
                 {
-                    // Входил вчера — продолжается серия (после 7 сбрасывается на 1)
                     int nextDay = data.loginStreak + 1;
                     return nextDay > 7 ? 1 : nextDay;
                 }
                 else if (daysDifference > 1)
                 {
-                    // Пропустил хотя бы день — серия сбрасывается
                     return 1;
                 }
             }
@@ -81,9 +72,6 @@ namespace WordleGame
             return Rewards[index];
         }
 
-        /// <summary>
-        /// Забрать награду за текущий день
-        /// </summary>
         public static bool ClaimReward(out DailyReward grantedReward)
         {
             grantedReward = default;
@@ -93,15 +81,12 @@ namespace WordleGame
             int currentDay = GetCurrentStreakDay();
             grantedReward = GetRewardForDay(currentDay);
 
-            // Начисляем валюту
             data.coins += grantedReward.Coins;
             data.rubies += grantedReward.Rubies;
 
-            // Обновляем серию и дату
             data.loginStreak = currentDay;
             data.lastClaimedRewardDate = TodayDate;
 
-            // Сохраняем
             SaveManager.Save();
             UIManager.Instance?.UpdateCurrencyUI();
 

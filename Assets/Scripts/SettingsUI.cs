@@ -13,7 +13,7 @@ namespace WordleGame
 
         [Header("Переключатели")]
         [SerializeField] private Toggle vibrationToggle;
-        [SerializeField] private FpsSwitch fpsSwitch; // Вместо старого graphicsToggle
+        [SerializeField] private FpsSwitch fpsSwitch;
 
         [Header("Промокоды")]
         [SerializeField] private TMP_InputField promoCodeInput;
@@ -29,20 +29,17 @@ namespace WordleGame
         {
             LoadSettingsToUI();
 
-            if (promoStatusText != null) promoStatusText.text = "";
+            if (promoStatusText != null) promoStatusText.text = string.Empty;
 
-            // Подписка на события компонентов
             if (fpsSwitch != null) fpsSwitch.OnFpsChanged += OnFpsSwitchChanged;
             if (closeButton != null) closeButton.onClick.AddListener(CloseWindow);
         }
 
         private void OnDisable()
         {
-            // Отписка от событий
             if (fpsSwitch != null) fpsSwitch.OnFpsChanged -= OnFpsSwitchChanged;
             if (closeButton != null) closeButton.onClick.RemoveListener(CloseWindow);
 
-            // Сохраняем все изменения на диск ЕДИНОЖДЫ при закрытии окна
             SaveManager.Save();
         }
 
@@ -51,25 +48,24 @@ namespace WordleGame
             GameData data = SaveManager.CurrentData;
             if (data == null) return;
 
-            // Устанавливаем значения слайдеров без вызова OnValueChanged
             if (musicSlider != null) musicSlider.SetValueWithoutNotify(data.musicVolume);
             if (sfxSlider != null) sfxSlider.SetValueWithoutNotify(data.sfxVolume);
             if (uiSfxSlider != null) uiSfxSlider.SetValueWithoutNotify(data.uiSfxVolume);
 
             if (vibrationToggle != null) vibrationToggle.SetIsOnWithoutNotify(data.isVibrationEnabled);
 
-            // Настройка состояния плашки 30 / 60 FPS (isLowGraphics = true значит 30 FPS)
             if (fpsSwitch != null)
             {
                 bool is60Fps = !data.isLowGraphics;
                 fpsSwitch.SetState(is60Fps, notifyListeners: false);
             }
 
-            // Применяем настройки графики к движку при загрузке
             ApplyGraphicsSettings(data.isLowGraphics);
-        }
 
-        // --- ОБРАБОТЧИКИ ПОЛЗУНКОВ ---
+            AudioManager.Instance?.SetMusicVolume(data.musicVolume);
+            AudioManager.Instance?.SetSfxVolume(data.sfxVolume);
+            AudioManager.Instance?.SetUiSfxVolume(data.uiSfxVolume);
+        }
 
         public void OnMusicVolumeChanged(float value)
         {
@@ -91,8 +87,6 @@ namespace WordleGame
             SaveManager.CurrentData.uiSfxVolume = value;
             AudioManager.Instance?.SetUiSfxVolume(value);
         }
-
-        // --- ТУМБЛЕРЫ И ПЕРЕКЛЮЧАТЕЛИ ---
 
         public void OnVibrationToggled(bool value)
         {
@@ -116,8 +110,6 @@ namespace WordleGame
             Application.targetFrameRate = isLow ? 30 : 60;
         }
 
-        // --- ПРОМОКОДЫ ---
-
         public void OnSubmitPromoCode()
         {
             if (promoCodeInput == null) return;
@@ -133,12 +125,10 @@ namespace WordleGame
 
             if (success)
             {
-                promoCodeInput.text = "";
-                SaveManager.Save(); // Промокод дал награду — сохраняем сразу
+                promoCodeInput.text = string.Empty;
+                SaveManager.Save();
             }
         }
-
-        // --- СБРОС ПРОГРЕССА ---
 
         public void OnClickResetProgress()
         {
@@ -154,8 +144,6 @@ namespace WordleGame
             if (resetConfirmModal != null) resetConfirmModal.SetActive(false);
             UIManager.Instance?.ShowInfoModal("СБРОС", "Весь прогресс успешно сброшен!");
         }
-
-        // --- ЗАКРЫТИЕ ОКНА ---
 
         public void CloseWindow()
         {

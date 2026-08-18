@@ -1,63 +1,94 @@
+using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 namespace WordleGame
 {
     public class DailyRewardCardUI : MonoBehaviour
     {
-        [Header("UI Элементы")]
+        [Header("UI Elements")]
         [SerializeField] private Image cardBackground;
-        [SerializeField] private Image rewardIcon;
         [SerializeField] private TextMeshProUGUI dayText;
+        [SerializeField] private Image rewardIcon;
         [SerializeField] private TextMeshProUGUI rewardAmountText;
-        [SerializeField] private GameObject claimedOverlay; // Галочка или слой "Забрано"
+        [SerializeField] private Button claimButton;
+        [SerializeField] private TextMeshProUGUI claimButtonText;
+        [SerializeField] private GameObject claimedOverlay;
+        [SerializeField] private GameObject lockIcon;
 
-        [Header("Спрайты валют")]
+        [Header("Sprites")]
         [SerializeField] private Sprite coinSprite;
         [SerializeField] private Sprite rubySprite;
 
-        [Header("Палитра Wordle")]
-        [SerializeField] private Color greenActive = new Color32(106, 170, 100, 255); // #6AAA64
-        [SerializeField] private Color yellowSpecial = new Color32(201, 180, 88, 255); // #C9B458
-        [SerializeField] private Color grayLocked = new Color32(58, 58, 60, 255);    // #3A3A3C
-        [SerializeField] private Color darkClaimed = new Color32(30, 30, 32, 255);    // #1E1E20
+        [Header("Card Background Colors")]
+        [SerializeField] private Color activeCardColor = new Color32(50, 45, 30, 255);
+        [SerializeField] private Color lockedCardColor = new Color32(35, 35, 35, 255);
+        [SerializeField] private Color claimedCardColor = new Color32(25, 25, 25, 200);
 
-        public void Setup(int dayNumber, DailyReward reward, int currentStreak, bool isClaimedToday)
+        [Header("Button Colors")]
+        [SerializeField] private Color activeBtnColor = new Color32(46, 204, 113, 255);
+        [SerializeField] private Color lockedBtnColor = new Color32(70, 70, 70, 255);
+
+        public void Setup(int dayNumber, int amount, bool isRuby, RewardState state, Action onClaim)
         {
             if (dayText != null)
-                dayText.text = $"ДЕНЬ {dayNumber}";
-
-            // Определение типа валюты и иконки
-            bool isRubyDay = reward.Rubies > 0;
-            if (rewardIcon != null)
-                rewardIcon.sprite = isRubyDay ? rubySprite : coinSprite;
+                dayText.text = $"День {dayNumber}";
 
             if (rewardAmountText != null)
-                rewardAmountText.text = isRubyDay ? $"+{reward.Rubies}" : $"+{reward.Coins}";
+                rewardAmountText.text = $"+{amount}";
 
-            // --- Состояния карточки ---
+            if (rewardIcon != null)
+                rewardIcon.sprite = isRuby ? rubySprite : coinSprite;
 
-            // 1. Прошлые дни или уже забранный сегодняшний день
-            if (dayNumber < currentStreak || (dayNumber == currentStreak && isClaimedToday))
+            if (claimButton != null)
+                claimButton.onClick.RemoveAllListeners();
+
+            Image btnImg = claimButton != null ? claimButton.GetComponent<Image>() : null;
+
+            switch (state)
             {
-                if (cardBackground != null) cardBackground.color = darkClaimed;
-                if (claimedOverlay != null) claimedOverlay.SetActive(true);
-                transform.localScale = Vector3.one;
-            }
-            // 2. Текущий доступный день (можно забрать прямо сейчас)
-            else if (dayNumber == currentStreak && !isClaimedToday)
-            {
-                if (cardBackground != null) cardBackground.color = isRubyDay ? yellowSpecial : greenActive;
-                if (claimedOverlay != null) claimedOverlay.SetActive(false);
-                transform.localScale = new Vector3(1.08f, 1.08f, 1f); // Легкий акцент масштабом
-            }
-            // 3. Будущие заблокированные дни
-            else
-            {
-                if (cardBackground != null) cardBackground.color = grayLocked;
-                if (claimedOverlay != null) claimedOverlay.SetActive(false);
-                transform.localScale = Vector3.one;
+                case RewardState.ReadyToClaim:
+                    if (cardBackground != null) cardBackground.color = activeCardColor;
+                    if (lockIcon != null) lockIcon.SetActive(false);
+                    if (claimedOverlay != null) claimedOverlay.SetActive(false);
+
+                    if (claimButton != null)
+                    {
+                        claimButton.gameObject.SetActive(true);
+                        claimButton.interactable = true;
+                        if (btnImg != null) btnImg.color = activeBtnColor;
+                        if (claimButtonText != null)
+                        {
+                            claimButtonText.gameObject.SetActive(true);
+                            claimButtonText.text = "Получить";
+                        }
+
+                        claimButton.onClick.AddListener(() => onClaim?.Invoke());
+                    }
+                    break;
+
+                case RewardState.Claimed:
+                    if (cardBackground != null) cardBackground.color = claimedCardColor;
+                    if (lockIcon != null) lockIcon.SetActive(false);
+                    if (claimedOverlay != null) claimedOverlay.SetActive(true);
+
+                    if (claimButton != null) claimButton.gameObject.SetActive(false);
+                    break;
+
+                case RewardState.Locked:
+                    if (cardBackground != null) cardBackground.color = lockedCardColor;
+                    if (lockIcon != null) lockIcon.SetActive(true);
+                    if (claimedOverlay != null) claimedOverlay.SetActive(false);
+
+                    if (claimButton != null)
+                    {
+                        claimButton.gameObject.SetActive(true);
+                        claimButton.interactable = false;
+                        if (btnImg != null) btnImg.color = lockedBtnColor;
+                        if (claimButtonText != null) claimButtonText.gameObject.SetActive(false);
+                    }
+                    break;
             }
         }
     }

@@ -1,44 +1,39 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace WordleGame
 {
     [Serializable]
     public class GameData
     {
-        // Экономика
         public int coins;
-        public int rubies; // Премиум-валюта
+        public int rubies;
 
-        // Статистика
-        public int currentWinStreak;                 // Имя приведено в соответствие с StatisticsUI
-        public int maxWinStreak;                     // Рекордная серия
+        public int currentWinStreak;
+        public int maxWinStreak;
         public int totalWins;
-        public int gamesPlayed;                      // Имя приведено в соответствие с StatisticsUI
-        public int[] guessDistribution = new int[6]; // Победы по 1..6 попыткам
-                                                     // Настройки аудио и отклика
-        public int loginStreak = 0;             // Текущий день серии (1..7)
+        public int gamesPlayed;
+        public int[] guessDistribution = new int[6];
+
+        public int loginStreak = 0;
         public string lastClaimedRewardDate = "";
-        public float musicVolume = 1f;
-        public float sfxVolume = 1f;
-        public float uiSfxVolume = 1f;
+
+        public float musicVolume = 0.5f;
+        public float sfxVolume = 0.5f;
+        public float uiSfxVolume = 0.5f;
 
         public bool isVibrationEnabled = true;
         public bool isLowGraphics = false;
         public List<string> redeemedPromoCodes = new List<string>();
 
-        // Магазин и кастомизация
         public string currentActiveSkinID = "Default";
         public List<string> unlockedSkinIDs = new List<string>() { "Default" };
 
-        // Ограничения кейсов 
         public int freeCasesOpenedToday;
         public string lastLoginDate = "";
-        public string lastDailyCaseDate = "";     // Формат "YYYY-MM-DD"
-        public string lastFreePlayCaseDate = "";  // Формат "YYYY-MM-DD"
+        public string lastDailyCaseDate = "";
+        public string lastFreePlayCaseDate = "";
 
-        // Гарантируем, что массив инициализирован при создании объекта в памяти
         public GameData()
         {
             if (guessDistribution == null || guessDistribution.Length != 6)

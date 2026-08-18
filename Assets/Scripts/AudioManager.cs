@@ -31,7 +31,7 @@ namespace WordleGame
             if (Instance == null)
             {
                 Instance = this;
-                transform.SetParent(null); // Отвязываем от родителя, чтобы DontDestroyOnLoad не выдавал ошибку
+                transform.SetParent(null);
                 DontDestroyOnLoad(gameObject);
             }
             else
@@ -42,11 +42,7 @@ namespace WordleGame
 
         private void Start()
         {
-            // Как только AudioManager готов к работе, запрашиваем применение сохраненной громкости
-            if (SettingsManager.Instance != null)
-            {
-                SettingsManager.Instance.ApplySettings();
-            }
+            ApplyAllVolumes();
         }
 
         public void ApplyAllVolumes()
@@ -74,14 +70,10 @@ namespace WordleGame
             if (uiSfxSource != null) uiSfxSource.volume = Mathf.Clamp01(volume);
         }
 
-        /// <summary>
-        /// Воспроизведение фоновой музыки
-        /// </summary>
         public void PlayMusic(AudioClip clip)
         {
             if (musicSource == null || clip == null) return;
 
-            // Если эта же музыка уже воспроизводится — игнорируем повторный запуск
             if (musicSource.clip == clip && musicSource.isPlaying) return;
 
             musicSource.clip = clip;
@@ -89,9 +81,6 @@ namespace WordleGame
             musicSource.Play();
         }
 
-        /// <summary>
-        /// Воспроизведение игровых SFX (ввод буквы, победа, поражение)
-        /// </summary>
         public void PlaySfx(AudioClip clip)
         {
             if (clip != null && sfxSource != null)
@@ -100,17 +89,11 @@ namespace WordleGame
             }
         }
 
-        /// <summary>
-        /// Воспроизведение стандартного звука клика по умолчанию (для вызова прямо из OnClick инспектора)
-        /// </summary>
         public void PlayUiSound()
         {
             PlayUiSound(defaultButtonClickSound);
         }
 
-        /// <summary>
-        /// Воспроизведение указанного UI звука (или дефолтного, если передан null)
-        /// </summary>
         public void PlayUiSound(AudioClip clip)
         {
             AudioClip clipToPlay = clip != null ? clip : defaultButtonClickSound;

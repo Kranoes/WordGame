@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 5dfd2ed0ce364514eb46e51181d962dc
+guid: 2ad7ba4a82843bf4a9a55870e94aad2a
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2528566821001631866
-    second: square-rounded-256_0
+      213: 4027345971692911204
+    second: lockblocked_122039_0
   externalObjects: {}
   serializedVersion: 12
   mipmaps:
@@ -110,22 +110,22 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: square-rounded-256_0
+      name: lockblocked_122039_0
       rect:
         serializedVersion: 2
-        x: 0
+        x: 64
         y: 0
-        width: 256
-        height: 256
+        width: 384
+        height: 512
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 30, y: 30, z: 30, w: 30}
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 687eb5b8fd9b8ecd0800000000000000
-      internalID: -2528566821001631866
+      spriteID: 46a3b5ec2d104e730800000000000000
+      internalID: 4027345971692911204
       vertices: []
       indices: 
       edges: []
@@ -133,7 +133,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 7da608395f0dcf14e9e625b65a5e7665
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -141,7 +141,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      square-rounded-256_0: -2528566821001631866
+      lockblocked_122039_0: 4027345971692911204
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

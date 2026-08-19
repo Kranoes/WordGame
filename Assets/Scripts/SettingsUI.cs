@@ -132,6 +132,9 @@ namespace WordleGame
         private void ApplyGraphicsSettings(bool isLow)
         {
             QualitySettings.SetQualityLevel(isLow ? 0 : 2, true);
+
+            QualitySettings.vSyncCount = 0;
+
             Application.targetFrameRate = isLow ? 30 : 60;
         }
 

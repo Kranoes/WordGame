@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-namespace WordleGame
+namespace GuessWordGame
 {
     public class KeyboardManager : MonoBehaviour
     {

@@ -1,29 +1,29 @@
-using System;
+п»їusing System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace WordleGame
+namespace GuessWordGame
 {
     public class FpsSwitch : MonoBehaviour
     {
-        [Header("Кнопки UI")]
+        [Header("РљРЅРѕРїРєРё UI")]
         [SerializeField] private Button button30;
         [SerializeField] private Button button60;
 
-        [Header("Фон кнопок (Image)")]
+        [Header("Р¤РѕРЅ РєРЅРѕРїРѕРє (Image)")]
         [SerializeField] private Image bg30;
         [SerializeField] private Image bg60;
 
-        [Header("Текст кнопок")]
+        [Header("РўРµРєСЃС‚ РєРЅРѕРїРѕРє")]
         [SerializeField] private TextMeshProUGUI text30;
         [SerializeField] private TextMeshProUGUI text60;
 
-        [Header("Цвета фонов")]
-        [SerializeField] private Color activeBgColor = new Color(0.2f, 0.6f, 1f, 1f);   // Активная кнопка
-        [SerializeField] private Color inactiveBgColor = new Color(0.2f, 0.2f, 0.2f, 1f); // Неактивная кнопка
+        [Header("Р¦РІРµС‚Р° С„РѕРЅРѕРІ")]
+        [SerializeField] private Color activeBgColor = new Color(0.2f, 0.6f, 1f, 1f);   // РђРєС‚РёРІРЅР°СЏ РєРЅРѕРїРєР°
+        [SerializeField] private Color inactiveBgColor = new Color(0.2f, 0.2f, 0.2f, 1f); // РќРµР°РєС‚РёРІРЅР°СЏ РєРЅРѕРїРєР°
 
-        [Header("Цвета текста")]
+        [Header("Р¦РІРµС‚Р° С‚РµРєСЃС‚Р°")]
         [SerializeField] private Color activeTextColor = Color.white;
         [SerializeField] private Color inactiveTextColor = new Color(0.6f, 0.6f, 0.6f, 1f);
 
@@ -41,11 +41,11 @@ namespace WordleGame
         {
             Is60Fps = is60Fps;
 
-            // Обновляем цвета фонов
+            // РћР±РЅРѕРІР»СЏРµРј С†РІРµС‚Р° С„РѕРЅРѕРІ
             if (bg30 != null) bg30.color = !is60Fps ? activeBgColor : inactiveBgColor;
             if (bg60 != null) bg60.color = is60Fps ? activeBgColor : inactiveBgColor;
 
-            // Обновляем цвета текста
+            // РћР±РЅРѕРІР»СЏРµРј С†РІРµС‚Р° С‚РµРєСЃС‚Р°
             if (text30 != null) text30.color = !is60Fps ? activeTextColor : inactiveTextColor;
             if (text60 != null) text60.color = is60Fps ? activeTextColor : inactiveTextColor;
 

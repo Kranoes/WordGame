@@ -1,21 +1,21 @@
-using TMPro;
+п»їusing TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace WordleGame
+namespace GuessWordGame
 {
     public class StatisticsUI : MonoBehaviour
     {
-        [Header("Основные счетчики")]
+        [Header("РћСЃРЅРѕРІРЅС‹Рµ СЃС‡РµС‚С‡РёРєРё")]
         [SerializeField] private TextMeshProUGUI gamesPlayedText;
         [SerializeField] private TextMeshProUGUI winRateText;
-        [SerializeField] private Image winRateFillBar; // Шкала процента побед
+        [SerializeField] private Image winRateFillBar; // РЁРєР°Р»Р° РїСЂРѕС†РµРЅС‚Р° РїРѕР±РµРґ
         [SerializeField] private TextMeshProUGUI currentStreakText;
         [SerializeField] private TextMeshProUGUI maxStreakText;
 
-        [Header("Гистограмма попыток (1-6)")]
-        [SerializeField] private TextMeshProUGUI[] guessCountTexts; // 6 текстов (% побед)
-        [SerializeField] private Image[] guessFillBars;             // 6 полосок заполнения
+        [Header("Р“РёСЃС‚РѕРіСЂР°РјРјР° РїРѕРїС‹С‚РѕРє (1-6)")]
+        [SerializeField] private TextMeshProUGUI[] guessCountTexts; // 6 С‚РµРєСЃС‚РѕРІ (% РїРѕР±РµРґ)
+        [SerializeField] private Image[] guessFillBars;             // 6 РїРѕР»РѕСЃРѕРє Р·Р°РїРѕР»РЅРµРЅРёСЏ
 
         private void OnEnable()
         {
@@ -27,7 +27,7 @@ namespace WordleGame
             GameData data = SaveManager.CurrentData;
             if (data == null) return;
 
-            // 1. Единый источник правды: считаем РЕАЛЬНОЕ число побед по строкам гистограммы
+            // 1. Р•РґРёРЅС‹Р№ РёСЃС‚РѕС‡РЅРёРє РїСЂР°РІРґС‹: СЃС‡РёС‚Р°РµРј Р Р•РђР›Р¬РќРћР• С‡РёСЃР»Рѕ РїРѕР±РµРґ РїРѕ СЃС‚СЂРѕРєР°Рј РіРёСЃС‚РѕРіСЂР°РјРјС‹
             int actualWins = 0;
             if (data.guessDistribution != null)
             {
@@ -37,22 +37,22 @@ namespace WordleGame
                 }
             }
 
-            // Исправляем рассинхронизировавшийся totalWins в объекте сохранения
+            // РСЃРїСЂР°РІР»СЏРµРј СЂР°СЃСЃРёРЅС…СЂРѕРЅРёР·РёСЂРѕРІР°РІС€РёР№СЃСЏ totalWins РІ РѕР±СЉРµРєС‚Рµ СЃРѕС…СЂР°РЅРµРЅРёСЏ
             data.totalWins = actualWins;
 
-            // 2. Валидация сыгранных игр
+            // 2. Р’Р°Р»РёРґР°С†РёСЏ СЃС‹РіСЂР°РЅРЅС‹С… РёРіСЂ
             int played = Mathf.Max(0, data.gamesPlayed);
-            if (played < actualWins) played = actualWins; // Сыграно не может быть меньше побед
+            if (played < actualWins) played = actualWins; // РЎС‹РіСЂР°РЅРѕ РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РјРµРЅСЊС€Рµ РїРѕР±РµРґ
 
-            // 3. Расчет Винрейта: Процент побед от ВСЕХ сыгранных игр (например, 4 / 5 = 80%)
+            // 3. Р Р°СЃС‡РµС‚ Р’РёРЅСЂРµР№С‚Р°: РџСЂРѕС†РµРЅС‚ РїРѕР±РµРґ РѕС‚ Р’РЎР•РҐ СЃС‹РіСЂР°РЅРЅС‹С… РёРіСЂ (РЅР°РїСЂРёРјРµСЂ, 4 / 5 = 80%)
             float winRateRatio = played > 0 ? (float)actualWins / played : 0f;
             int winRatePercentage = Mathf.RoundToInt(winRateRatio * 100f);
 
-            // 4. Ограничение серий
+            // 4. РћРіСЂР°РЅРёС‡РµРЅРёРµ СЃРµСЂРёР№
             int currentStreak = Mathf.Clamp(data.currentWinStreak, 0, played);
             int maxStreak = Mathf.Clamp(data.maxWinStreak, 0, played);
 
-            // 5. Вывод основных значений
+            // 5. Р’С‹РІРѕРґ РѕСЃРЅРѕРІРЅС‹С… Р·РЅР°С‡РµРЅРёР№
             if (gamesPlayedText != null) gamesPlayedText.text = played.ToString();
             if (winRateText != null) winRateText.text = $"{winRatePercentage}%";
             if (currentStreakText != null) currentStreakText.text = currentStreak.ToString();
@@ -63,7 +63,7 @@ namespace WordleGame
                 winRateFillBar.fillAmount = winRateRatio;
             }
 
-            // 6. Отрисовка гистограммы (строго от количества ПОБЕД actualWins)
+            // 6. РћС‚СЂРёСЃРѕРІРєР° РіРёСЃС‚РѕРіСЂР°РјРјС‹ (СЃС‚СЂРѕРіРѕ РѕС‚ РєРѕР»РёС‡РµСЃС‚РІР° РџРћР‘Р•Р” actualWins)
             UpdateGuessDistribution(data, actualWins);
         }
 
@@ -75,18 +75,18 @@ namespace WordleGame
             {
                 int count = Mathf.Max(0, data.guessDistribution[i]);
 
-                // Доля текущей попытки строго от ОБЩЕГО ЧИСЛА ПОБЕД (а не сыгранных игр!)
-                // Если побед 4: 2/4 = 50%, 1/4 = 25%, 1/4 = 25%. В сумме всегда 100%!
+                // Р”РѕР»СЏ С‚РµРєСѓС‰РµР№ РїРѕРїС‹С‚РєРё СЃС‚СЂРѕРіРѕ РѕС‚ РћР‘Р©Р•Р“Рћ Р§РРЎР›Рђ РџРћР‘Р•Р” (Р° РЅРµ СЃС‹РіСЂР°РЅРЅС‹С… РёРіСЂ!)
+                // Р•СЃР»Рё РїРѕР±РµРґ 4: 2/4 = 50%, 1/4 = 25%, 1/4 = 25%. Р’ СЃСѓРјРјРµ РІСЃРµРіРґР° 100%!
                 float shareRatio = totalWins > 0 ? (float)count / totalWins : 0f;
                 int sharePercentage = Mathf.RoundToInt(shareRatio * 100f);
 
-                // Текст процента
+                // РўРµРєСЃС‚ РїСЂРѕС†РµРЅС‚Р°
                 if (guessCountTexts != null && i < guessCountTexts.Length && guessCountTexts[i] != null)
                 {
                     guessCountTexts[i].text = $"{sharePercentage}%";
                 }
 
-                // Заполнение полоски (min 0.08f для красивой плашки при 0%)
+                // Р—Р°РїРѕР»РЅРµРЅРёРµ РїРѕР»РѕСЃРєРё (min 0.08f РґР»СЏ РєСЂР°СЃРёРІРѕР№ РїР»Р°С€РєРё РїСЂРё 0%)
                 if (guessFillBars != null && i < guessFillBars.Length && guessFillBars[i] != null)
                 {
                     float fillRatio = count == 0 ? 0.08f : Mathf.Clamp(shareRatio, 0.08f, 1f);

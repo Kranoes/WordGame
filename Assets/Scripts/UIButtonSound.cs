@@ -1,12 +1,12 @@
-using UnityEngine;
+п»їusing UnityEngine;
 using UnityEngine.UI;
 
-namespace WordleGame
+namespace GuessWordGame
 {
     [RequireComponent(typeof(Button))]
     public class UIButtonSound : MonoBehaviour
     {
-        [Header("Опционально: свой клик для этой кнопки")]
+        [Header("РћРїС†РёРѕРЅР°Р»СЊРЅРѕ: СЃРІРѕР№ РєР»РёРє РґР»СЏ СЌС‚РѕР№ РєРЅРѕРїРєРё")]
         [SerializeField] private AudioClip customClickSound;
 
         private Button button;
@@ -34,7 +34,7 @@ namespace WordleGame
 
         private void PlaySound()
         {
-            // button.interactable проверяется движком Unity перед вызовом onClick автоматически
+            // button.interactable РїСЂРѕРІРµСЂСЏРµС‚СЃСЏ РґРІРёР¶РєРѕРј Unity РїРµСЂРµРґ РІС‹Р·РѕРІРѕРј onClick Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё
             AudioManager.Instance?.PlayUiSound(customClickSound);
         }
     }

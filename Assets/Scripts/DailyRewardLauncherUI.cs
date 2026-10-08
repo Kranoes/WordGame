@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace WordleGame
+namespace GuessWordGame
 {
     public class DailyRewardLauncherUI : MonoBehaviour
     {

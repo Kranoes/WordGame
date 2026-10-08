@@ -140,7 +140,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      free-icon-close-page-9055079_0: -3820900671074191086
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

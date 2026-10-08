@@ -1,9 +1,9 @@
-using System;
+ï»¿using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace WordleGame
+namespace GuessWordGame
 {
     public class DailyRewardCardUI : MonoBehaviour
     {
@@ -33,7 +33,7 @@ namespace WordleGame
         public void Setup(int dayNumber, int amount, bool isRuby, RewardState state, Action onClaim)
         {
             if (dayText != null)
-                dayText.text = $"Äåíü {dayNumber}";
+                dayText.text = $"Ð”ÐµÐ½ÑŒ {dayNumber}";
 
             if (rewardAmountText != null)
                 rewardAmountText.text = $"+{amount}";
@@ -61,7 +61,7 @@ namespace WordleGame
                         if (claimButtonText != null)
                         {
                             claimButtonText.gameObject.SetActive(true);
-                            claimButtonText.text = "Ïîëó÷èòü";
+                            claimButtonText.text = "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ";
                         }
 
                         claimButton.onClick.AddListener(() => onClaim?.Invoke());

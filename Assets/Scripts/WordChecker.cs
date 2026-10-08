@@ -1,6 +1,6 @@
-using System.Collections.Generic;
+п»їusing System.Collections.Generic;
 
-namespace WordleGame
+namespace GuessWordGame
 {
     public static class WordChecker
     {
@@ -11,7 +11,7 @@ namespace WordleGame
             char[] targetChars = targetWord.ToCharArray();
             bool[] targetUsed = new bool[length];
 
-            // 1. Точные совпадения (Зеленые)
+            // 1. РўРѕС‡РЅС‹Рµ СЃРѕРІРїР°РґРµРЅРёСЏ (Р—РµР»РµРЅС‹Рµ)
             for (int i = 0; i < length; i++)
             {
                 if (guessWord[i] == targetChars[i])
@@ -21,7 +21,7 @@ namespace WordleGame
                 }
             }
 
-            // 2. Частичные совпадения (Желтые)
+            // 2. Р§Р°СЃС‚РёС‡РЅС‹Рµ СЃРѕРІРїР°РґРµРЅРёСЏ (Р–РµР»С‚С‹Рµ)
             for (int i = 0; i < length; i++)
             {
                 if (results[i] == LetterState.Green) continue;

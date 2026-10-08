@@ -1,4 +1,4 @@
-namespace WordleGame
+namespace GuessWordGame
 {
     public enum LetterState
     {

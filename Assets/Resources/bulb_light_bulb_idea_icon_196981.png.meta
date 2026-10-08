@@ -260,7 +260,13 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      bulb_light_bulb_idea_icon_196981_0: 7112367181239573144
+      bulb_light_bulb_idea_icon_196981_1: 9115593867893678528
+      bulb_light_bulb_idea_icon_196981_2: 6847792946422997172
+      bulb_light_bulb_idea_icon_196981_3: -814706226462382147
+      bulb_light_bulb_idea_icon_196981_4: -6927551735661012955
+      bulb_light_bulb_idea_icon_196981_5: -2866313655344309835
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace WordleGame
+namespace GuessWordGame
 {
     public static class RewardManager
     {
@@ -29,7 +29,7 @@ namespace WordleGame
 
             if (DateTime.TryParse(lastClaimStr, out DateTime lastClaimDate))
             {
-                int daysPassed = (DateTime.UtcNow.Date - lastClaimDate.Date).Days;
+                int daysPassed = (GameClock.Today - lastClaimDate.Date).Days;
                 if (daysPassed > 1)
                 {
                     SaveManager.CurrentData.loginStreak = 0;
@@ -42,7 +42,7 @@ namespace WordleGame
         {
             if (SaveManager.CurrentData == null) return false;
 
-            string today = DateTime.UtcNow.ToString("yyyy-MM-dd");
+            string today = GameClock.TodayString;
             return SaveManager.CurrentData.lastClaimedRewardDate != today;
         }
 
@@ -60,7 +60,7 @@ namespace WordleGame
             else
                 SaveManager.CurrentData.coins += amount;
 
-            SaveManager.CurrentData.lastClaimedRewardDate = DateTime.UtcNow.ToString("yyyy-MM-dd");
+            SaveManager.CurrentData.lastClaimedRewardDate = GameClock.TodayString;
             SaveManager.CurrentData.loginStreak = (currentStreak + 1) % 7;
 
             SaveManager.Save();
@@ -73,7 +73,7 @@ namespace WordleGame
         {
             if (SaveManager.CurrentData == null) return false;
 
-            string today = DateTime.UtcNow.ToString("yyyy-MM-dd");
+            string today = GameClock.TodayString;
             if (SaveManager.CurrentData.lastFreePlayCaseDate != today)
             {
                 SaveManager.CurrentData.lastFreePlayCaseDate = today;
@@ -89,7 +89,7 @@ namespace WordleGame
             droppedCoins = 0;
             if (SaveManager.CurrentData == null) return false;
 
-            string today = DateTime.UtcNow.ToString("yyyy-MM-dd");
+            string today = GameClock.TodayString;
 
             if (mode == GameMode.Daily)
             {

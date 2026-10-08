@@ -1,35 +1,35 @@
-using TMPro;
+п»їusing TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace WordleGame
+namespace GuessWordGame
 {
     public class SettingsUI : MonoBehaviour
     {
-        [Header("Аудио (Sliders)")]
+        [Header("РђСѓРґРёРѕ (Sliders)")]
         [SerializeField] private Slider musicSlider;
         [SerializeField] private Slider sfxSlider;
         [SerializeField] private Slider uiSfxSlider;
 
-        [Header("Переключатели")]
+        [Header("РџРµСЂРµРєР»СЋС‡Р°С‚РµР»Рё")]
         [SerializeField] private Toggle vibrationToggle;
         [SerializeField] private FpsSwitch fpsSwitch;
 
-        [Header("Промокоды")]
+        [Header("РџСЂРѕРјРѕРєРѕРґС‹")]
         [SerializeField] private TMP_InputField promoCodeInput;
         [SerializeField] private TextMeshProUGUI promoStatusText;
 
-        [Header("Кнопка закрытия")]
+        [Header("РљРЅРѕРїРєР° Р·Р°РєСЂС‹С‚РёСЏ")]
         [SerializeField] private Button closeButton;
 
-        [Header("Подтверждение сброса")]
+        [Header("РџРѕРґС‚РІРµСЂР¶РґРµРЅРёРµ СЃР±СЂРѕСЃР°")]
         [SerializeField] private GameObject resetConfirmModal;
 
         private void OnEnable()
         {
             LoadSettingsToUI();
 
-            // Автоматически подписываем события
+            // РђРІС‚РѕРјР°С‚РёС‡РµСЃРєРё РїРѕРґРїРёСЃС‹РІР°РµРј СЃРѕР±С‹С‚РёСЏ
             UnsubscribeUI();
             SubscribeUI();
 
@@ -40,7 +40,7 @@ namespace WordleGame
         {
             UnsubscribeUI();
 
-            // Сохраняем на диск при закрытии панели
+            // РЎРѕС…СЂР°РЅСЏРµРј РЅР° РґРёСЃРє РїСЂРё Р·Р°РєСЂС‹С‚РёРё РїР°РЅРµР»Рё
             SaveManager.Save();
         }
 
@@ -71,7 +71,7 @@ namespace WordleGame
             GameData data = SaveManager.CurrentData;
             if (data == null) return;
 
-            // Выставляем визуальное положение слайдеров без срабатывания ивентов
+            // Р’С‹СЃС‚Р°РІР»СЏРµРј РІРёР·СѓР°Р»СЊРЅРѕРµ РїРѕР»РѕР¶РµРЅРёРµ СЃР»Р°Р№РґРµСЂРѕРІ Р±РµР· СЃСЂР°Р±Р°С‚С‹РІР°РЅРёСЏ РёРІРµРЅС‚РѕРІ
             if (musicSlider != null) musicSlider.SetValueWithoutNotify(data.musicVolume);
             if (sfxSlider != null) sfxSlider.SetValueWithoutNotify(data.sfxVolume);
             if (uiSfxSlider != null) uiSfxSlider.SetValueWithoutNotify(data.uiSfxVolume);
@@ -86,7 +86,7 @@ namespace WordleGame
 
             ApplyGraphicsSettings(data.isLowGraphics);
 
-            // Принудительно отдаем сохраненный звук в AudioManager
+            // РџСЂРёРЅСѓРґРёС‚РµР»СЊРЅРѕ РѕС‚РґР°РµРј СЃРѕС…СЂР°РЅРµРЅРЅС‹Р№ Р·РІСѓРє РІ AudioManager
             AudioManager.Instance?.SetMusicVolume(data.musicVolume);
             AudioManager.Instance?.SetSfxVolume(data.sfxVolume);
             AudioManager.Instance?.SetUiSfxVolume(data.uiSfxVolume);
@@ -132,6 +132,9 @@ namespace WordleGame
         private void ApplyGraphicsSettings(bool isLow)
         {
             QualitySettings.SetQualityLevel(isLow ? 0 : 2, true);
+
+            QualitySettings.vSyncCount = 0;
+
             Application.targetFrameRate = isLow ? 30 : 60;
         }
 
@@ -167,7 +170,7 @@ namespace WordleGame
             AudioManager.Instance?.ApplyAllVolumes();
 
             if (resetConfirmModal != null) resetConfirmModal.SetActive(false);
-            UIManager.Instance?.ShowInfoModal("СБРОС", "Весь прогресс успешно сброшен!");
+            UIManager.Instance?.ShowInfoModal("РЎР‘Р РћРЎ", "Р’РµСЃСЊ РїСЂРѕРіСЂРµСЃСЃ СѓСЃРїРµС€РЅРѕ СЃР±СЂРѕС€РµРЅ!");
         }
 
         public void CloseWindow()

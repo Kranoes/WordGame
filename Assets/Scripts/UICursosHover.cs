@@ -1,15 +1,15 @@
-using UnityEngine;
+п»їusing UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace WordleGame
+namespace GuessWordGame
 {
     public class UICursorHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         [Header("Cursor Settings")]
-        [SerializeField] private Texture2D hoverCursor; // Текстура курсора при наведении
-        [SerializeField] private Vector2 hotSpot = Vector2.zero; // Точка клика (активная точка курсора)
+        [SerializeField] private Texture2D hoverCursor; // РўРµРєСЃС‚СѓСЂР° РєСѓСЂСЃРѕСЂР° РїСЂРё РЅР°РІРµРґРµРЅРёРё
+        [SerializeField] private Vector2 hotSpot = Vector2.zero; // РўРѕС‡РєР° РєР»РёРєР° (Р°РєС‚РёРІРЅР°СЏ С‚РѕС‡РєР° РєСѓСЂСЃРѕСЂР°)
 
-        // Срабатывает при наведении мыши на элемент
+        // РЎСЂР°Р±Р°С‚С‹РІР°РµС‚ РїСЂРё РЅР°РІРµРґРµРЅРёРё РјС‹С€Рё РЅР° СЌР»РµРјРµРЅС‚
         public void OnPointerEnter(PointerEventData eventData)
         {
             if (hoverCursor != null)
@@ -18,13 +18,13 @@ namespace WordleGame
             }
         }
 
-        // Срабатывает, когда мышь уходит с элемента
+        // РЎСЂР°Р±Р°С‚С‹РІР°РµС‚, РєРѕРіРґР° РјС‹С€СЊ СѓС…РѕРґРёС‚ СЃ СЌР»РµРјРµРЅС‚Р°
         public void OnPointerExit(PointerEventData eventData)
         {
             ResetCursor();
         }
 
-        // Защита: если кнопка выключилась, пока мышь была на ней
+        // Р—Р°С‰РёС‚Р°: РµСЃР»Рё РєРЅРѕРїРєР° РІС‹РєР»СЋС‡РёР»Р°СЃСЊ, РїРѕРєР° РјС‹С€СЊ Р±С‹Р»Р° РЅР° РЅРµР№
         private void OnDisable()
         {
             ResetCursor();
@@ -32,7 +32,7 @@ namespace WordleGame
 
         private void ResetCursor()
         {
-            // Сброс на дефолтный системный курсор
+            // РЎР±СЂРѕСЃ РЅР° РґРµС„РѕР»С‚РЅС‹Р№ СЃРёСЃС‚РµРјРЅС‹Р№ РєСѓСЂСЃРѕСЂ
             Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
         }
     }

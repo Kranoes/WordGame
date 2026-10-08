@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace WordleGame
+namespace GuessWordGame
 {
     public struct DailyReward
     {
@@ -30,7 +30,7 @@ namespace WordleGame
             new DailyReward(7, 0, 10)
         };
 
-        public static string TodayDate => DateTime.UtcNow.ToString("yyyy-MM-dd");
+        public static string TodayDate => GameClock.TodayString;
 
         public static bool CanClaimReward()
         {
@@ -50,7 +50,7 @@ namespace WordleGame
 
             if (DateTime.TryParse(data.lastClaimedRewardDate, out DateTime lastDate))
             {
-                int daysDifference = (DateTime.UtcNow.Date - lastDate.Date).Days;
+                int daysDifference = (GameClock.Today - lastDate.Date).Days;
 
                 if (daysDifference == 1)
                 {

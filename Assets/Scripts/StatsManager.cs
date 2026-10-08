@@ -1,6 +1,6 @@
-using UnityEngine;
+п»їusing UnityEngine;
 
-namespace WordleGame
+namespace GuessWordGame
 {
     public class StatsManager : MonoBehaviour
     {
@@ -13,7 +13,7 @@ namespace WordleGame
         }
 
         /// <summary>
-        /// Обрабатывает результат завершенного раунда
+        /// РћР±СЂР°Р±Р°С‚С‹РІР°РµС‚ СЂРµР·СѓР»СЊС‚Р°С‚ Р·Р°РІРµСЂС€РµРЅРЅРѕРіРѕ СЂР°СѓРЅРґР°
         /// </summary>
         public void ProcessGameResult(bool isWin, int usedAttempts)
         {
@@ -32,7 +32,7 @@ namespace WordleGame
                     data.maxWinStreak = data.currentWinStreak;
                 }
 
-                // Запись попытки в распределение (0 = 1-я попытка)
+                // Р—Р°РїРёСЃСЊ РїРѕРїС‹С‚РєРё РІ СЂР°СЃРїСЂРµРґРµР»РµРЅРёРµ (0 = 1-СЏ РїРѕРїС‹С‚РєР°)
                 if (data.guessDistribution == null || data.guessDistribution.Length != 6)
                 {
                     data.guessDistribution = new int[6];
@@ -50,7 +50,7 @@ namespace WordleGame
         }
 
         /// <summary>
-        /// Возвращает процент побед
+        /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РїСЂРѕС†РµРЅС‚ РїРѕР±РµРґ
         /// </summary>
         public float GetWinRate()
         {

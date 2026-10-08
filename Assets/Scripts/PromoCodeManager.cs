@@ -1,8 +1,8 @@
-using System;
+п»їusing System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace WordleGame
+namespace GuessWordGame
 {
     public static class PromoCodeManager
     {
@@ -20,16 +20,16 @@ namespace WordleGame
 
         private static readonly Dictionary<string, PromoCodeInfo> PromoCodes = new Dictionary<string, PromoCodeInfo>
         {
-            { "START", new PromoCodeInfo("Получено +500 монет!", data => data.coins += 500) },
-            { "RUBIES", new PromoCodeInfo("Получено +50 рубинов!", data => data.rubies += 50) },
-            { "WORDLE2026", new PromoCodeInfo("Получено +1000 монет и +100 рубинов!", data => { data.coins += 1000; data.rubies += 100; }) }
+            { "START", new PromoCodeInfo("РџРѕР»СѓС‡РµРЅРѕ +500 РјРѕРЅРµС‚!", data => data.coins += 500) },
+            { "RUBIES", new PromoCodeInfo("РџРѕР»СѓС‡РµРЅРѕ +50 СЂСѓР±РёРЅРѕРІ!", data => data.rubies += 50) },
+            { "GUESS2026", new PromoCodeInfo("РџРѕР»СѓС‡РµРЅРѕ +1000 РјРѕРЅРµС‚ Рё +100 СЂСѓР±РёРЅРѕРІ!", data => { data.coins += 1000; data.rubies += 100; }) }
         };
 
         public static bool TryRedeemCode(string code, out string message)
         {
             if (string.IsNullOrWhiteSpace(code))
             {
-                message = "Введите промокод";
+                message = "Р’РІРµРґРёС‚Рµ РїСЂРѕРјРѕРєРѕРґ";
                 return false;
             }
 
@@ -38,14 +38,14 @@ namespace WordleGame
             GameData data = SaveManager.CurrentData;
             if (data == null)
             {
-                message = "Ошибка загрузки данных";
+                message = "РћС€РёР±РєР° Р·Р°РіСЂСѓР·РєРё РґР°РЅРЅС‹С…";
                 return false;
             }
 
-            // Защита от NRE и проверка по корректному полю redeemedPromoCodes
+            // Р—Р°С‰РёС‚Р° РѕС‚ NRE Рё РїСЂРѕРІРµСЂРєР° РїРѕ РєРѕСЂСЂРµРєС‚РЅРѕРјСѓ РїРѕР»СЋ redeemedPromoCodes
             if (data.redeemedPromoCodes != null && data.redeemedPromoCodes.Contains(upperCode))
             {
-                message = "Промокод уже использован";
+                message = "РџСЂРѕРјРѕРєРѕРґ СѓР¶Рµ РёСЃРїРѕР»СЊР·РѕРІР°РЅ";
                 return false;
             }
 
@@ -59,7 +59,7 @@ namespace WordleGame
                 }
                 data.redeemedPromoCodes.Add(upperCode);
 
-                // Записываем данные в файл/PlayerPrefs и перерисовываем баланс на экране
+                // Р—Р°РїРёСЃС‹РІР°РµРј РґР°РЅРЅС‹Рµ РІ С„Р°Р№Р»/PlayerPrefs Рё РїРµСЂРµСЂРёСЃРѕРІС‹РІР°РµРј Р±Р°Р»Р°РЅСЃ РЅР° СЌРєСЂР°РЅРµ
                 SaveManager.Save();
                 UIManager.Instance?.UpdateCurrencyUI();
 
@@ -67,7 +67,7 @@ namespace WordleGame
                 return true;
             }
 
-            message = "Неверный промокод";
+            message = "РќРµРІРµСЂРЅС‹Р№ РїСЂРѕРјРѕРєРѕРґ";
             return false;
         }
     }

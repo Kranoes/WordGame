@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using TMPro;
 
-namespace WordleGame
+namespace GuessWordGame
 {
     public class HintManager : MonoBehaviour
     {

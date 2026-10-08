@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace WordleGame
+namespace GuessWordGame
 {
     [Serializable]
     public class GameData
@@ -14,6 +14,9 @@ namespace WordleGame
         public int totalWins;
         public int gamesPlayed;
         public int[] guessDistribution = new int[6];
+        public int extraAttemptHints;
+        public int revealLetterHints;
+        public int removeLetterHints;
 
         public int loginStreak = 0;
         public string lastClaimedRewardDate = "";

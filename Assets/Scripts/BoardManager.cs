@@ -1,6 +1,6 @@
-using UnityEngine;
+п»їusing UnityEngine;
 
-namespace WordleGame
+namespace GuessWordGame
 {
     public class BoardManager : MonoBehaviour
     {
@@ -38,7 +38,7 @@ namespace WordleGame
                     }
                     else
                     {
-                        Debug.LogError("На префабе Cell отсутствует компонент Cell!");
+                        Debug.LogError("РќР° РїСЂРµС„Р°Р±Рµ Cell РѕС‚СЃСѓС‚СЃС‚РІСѓРµС‚ РєРѕРјРїРѕРЅРµРЅС‚ Cell!");
                     }
                 }
             }

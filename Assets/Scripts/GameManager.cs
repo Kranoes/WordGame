@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-namespace WordleGame
+namespace GuessWordGame
 {
     public class GameManager : MonoBehaviour
     {
@@ -29,6 +29,10 @@ namespace WordleGame
 
         private bool gameActive = false;
         private bool isInputBlocked = false;
+
+        // Нужны, чтобы откатить поражение, если игрок воскресает (доп. попытка)
+        private bool lastResultWasLoss = false;
+        private int streakBeforeLoss = 0;
 
         private readonly List<string> wordPool = new List<string>();
         public bool IsGameActive => gameActive;
@@ -127,10 +131,10 @@ namespace WordleGame
 
             if (currentMode == GameMode.Daily)
             {
-                string today = System.DateTime.UtcNow.ToString("yyyy-MM-dd");
+                string today = GameClock.TodayString;
                 if (SaveManager.CurrentData.lastDailyCaseDate == today)
                 {
-                    UIManager.Instance?.ShowInfoModal("ЕЖЕДНЕВНЫЙ РЕЖИМ", "Вы уже отгадали сегодняшнее слово!\nВозвращайтесь завтра.");
+                    UIManager.Instance?.ShowInfoModal("ЕЖЕДНЕВНЫЙ РЕЖИМ", "Вы уже сыграли сегодняшнее слово!\nВозвращайтесь завтра.");
                     gameActive = false;
                     return;
                 }
@@ -202,6 +206,7 @@ namespace WordleGame
             if (data == null) return;
 
             SaveManager.CurrentData.gamesPlayed++;
+            lastResultWasLoss = !isWin;
 
             if (isWin)
             {
@@ -221,6 +226,7 @@ namespace WordleGame
             }
             else
             {
+                streakBeforeLoss = SaveManager.CurrentData.currentWinStreak;
                 SaveManager.CurrentData.currentWinStreak = 0;
             }
 
@@ -325,6 +331,13 @@ namespace WordleGame
             {
                 RecordGameResult(false, attempts);
 
+                // Ежедневное слово одно на день: после проигрыша повторно сыграть нельзя
+                if (currentMode == GameMode.Daily)
+                {
+                    SaveManager.CurrentData.lastDailyCaseDate = GameClock.TodayString;
+                    SaveManager.Save();
+                }
+
                 gameActive = false;
                 UIManager.Instance?.ShowLoseModal(secretWord);
             }
@@ -347,7 +360,7 @@ namespace WordleGame
 
             if (currentMode == GameMode.Daily)
             {
-                string dateStr = System.DateTime.UtcNow.ToString("yyyyMMdd");
+                string dateStr = GameClock.Today.ToString("yyyyMMdd");
                 int dateSeed = int.Parse(dateStr);
 
                 System.Random dailyRandom = new System.Random(dateSeed);
@@ -364,6 +377,19 @@ namespace WordleGame
         public bool GrantExtraAttempt()
         {
             if (attempts <= 0) return false;
+
+            // Воскрешение после поражения: отменяем записанное поражение
+            if (!gameActive && lastResultWasLoss)
+            {
+                GameData data = SaveManager.CurrentData;
+                if (data != null)
+                {
+                    data.gamesPlayed = Mathf.Max(0, data.gamesPlayed - 1);
+                    data.currentWinStreak = streakBeforeLoss;
+                    SaveManager.Save();
+                }
+                lastResultWasLoss = false;
+            }
 
             int targetRow = !gameActive ? (currentRow < MaxAttempts ? currentRow : MaxAttempts - 1)
                                         : (currentRow > 0 ? currentRow - 1 : 0);
@@ -391,6 +417,7 @@ namespace WordleGame
             currentRow = 0;
             currentCol = 0;
             attempts = 0;
+            lastResultWasLoss = false;
 
             for (int r = 0; r < MaxAttempts; r++)
             {

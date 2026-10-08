@@ -1,16 +1,16 @@
-using System.Collections.Generic;
+п»їusing System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace WordleGame
+namespace GuessWordGame
 {
     public class LeaderboardUI : MonoBehaviour
     {
-        [Header("Контейнер элементов списка")]
+        [Header("РљРѕРЅС‚РµР№РЅРµСЂ СЌР»РµРјРµРЅС‚РѕРІ СЃРїРёСЃРєР°")]
         [SerializeField] private Transform contentContainer;
         [SerializeField] private GameObject itemPrefab;
 
-        [Header("Кнопки вкладок")]
+        [Header("РљРЅРѕРїРєРё РІРєР»Р°РґРѕРє")]
         [SerializeField] private Button winsTabButton;
         [SerializeField] private Button coinsTabButton;
         [SerializeField] private Button rubiesTabButton;
@@ -48,11 +48,11 @@ namespace WordleGame
         {
             if (contentContainer == null || itemPrefab == null)
             {
-                Debug.LogWarning("LeaderboardUI: Не назначены contentContainer или itemPrefab в Инспекторе!");
+                Debug.LogWarning("LeaderboardUI: РќРµ РЅР°Р·РЅР°С‡РµРЅС‹ contentContainer РёР»Рё itemPrefab РІ РРЅСЃРїРµРєС‚РѕСЂРµ!");
                 return;
             }
 
-            // Очищаем старые строчки таблицы перед новой отрисовкой
+            // РћС‡РёС‰Р°РµРј СЃС‚Р°СЂС‹Рµ СЃС‚СЂРѕС‡РєРё С‚Р°Р±Р»РёС†С‹ РїРµСЂРµРґ РЅРѕРІРѕР№ РѕС‚СЂРёСЃРѕРІРєРѕР№
             foreach (Transform child in contentContainer)
             {
                 Destroy(child.gameObject);
@@ -60,14 +60,14 @@ namespace WordleGame
 
             if (LeaderboardManager.Instance == null)
             {
-                Debug.LogError("LeaderboardUI: LeaderboardManager не найден на сцене!");
+                Debug.LogError("LeaderboardUI: LeaderboardManager РЅРµ РЅР°Р№РґРµРЅ РЅР° СЃС†РµРЅРµ!");
                 return;
             }
 
-            // Получаем отсортированный список лидеров
+            // РџРѕР»СѓС‡Р°РµРј РѕС‚СЃРѕСЂС‚РёСЂРѕРІР°РЅРЅС‹Р№ СЃРїРёСЃРѕРє Р»РёРґРµСЂРѕРІ
             List<LeaderboardEntry> leaderboard = LeaderboardManager.Instance.GetLeaderboard(currentCategory);
 
-            // Заполняем таблицу элементами
+            // Р—Р°РїРѕР»РЅСЏРµРј С‚Р°Р±Р»РёС†Сѓ СЌР»РµРјРµРЅС‚Р°РјРё
             for (int i = 0; i < leaderboard.Count; i++)
             {
                 GameObject obj = Instantiate(itemPrefab, contentContainer);

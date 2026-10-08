@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace WordleGame
+namespace GuessWordGame
 {
     public class AudioManager : MonoBehaviour
     {

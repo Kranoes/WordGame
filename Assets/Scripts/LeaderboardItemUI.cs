@@ -1,17 +1,17 @@
-using UnityEngine;
+п»їusing UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
-namespace WordleGame
+namespace GuessWordGame
 {
     public class LeaderboardItemUI : MonoBehaviour
     {
-        [Header("UI Тексты")]
+        [Header("UI РўРµРєСЃС‚С‹")]
         [SerializeField] private TextMeshProUGUI rankText;
         [SerializeField] private TextMeshProUGUI nameText;
         [SerializeField] private TextMeshProUGUI scoreText;
 
-        [Header("Подсветка текущего игрока")]
+        [Header("РџРѕРґСЃРІРµС‚РєР° С‚РµРєСѓС‰РµРіРѕ РёРіСЂРѕРєР°")]
         [SerializeField] private Image backgroundHighlight;
         [SerializeField] private Color defaultBgColor = new Color(0.2f, 0.2f, 0.2f, 0.5f);
         [SerializeField] private Color playerBgColor = new Color(0.2f, 0.8f, 0.3f, 0.5f);

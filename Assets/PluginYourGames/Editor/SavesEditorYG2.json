@@ -1,0 +1,48 @@
+{
+    "intExample": 5,
+    "strExample": "Hello!",
+    "boolExample": [
+        false,
+        false,
+        false,
+        false
+    ],
+    "idSave": 8,
+    "gameData": {
+        "coins": 540,
+        "rubies": 0,
+        "currentWinStreak": 1,
+        "maxWinStreak": 1,
+        "totalWins": 1,
+        "gamesPlayed": 1,
+        "guessDistribution": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "extraAttemptHints": 0,
+        "revealLetterHints": 0,
+        "removeLetterHints": 0,
+        "loginStreak": 0,
+        "lastClaimedRewardDate": "",
+        "musicVolume": 0.18590684235095979,
+        "sfxVolume": 0.35007429122924807,
+        "uiSfxVolume": 0.35007429122924807,
+        "isVibrationEnabled": true,
+        "isLowGraphics": false,
+        "redeemedPromoCodes": [
+            "START"
+        ],
+        "currentActiveSkinID": "Default",
+        "unlockedSkinIDs": [
+            "Default"
+        ],
+        "freeCasesOpenedToday": 1,
+        "lastLoginDate": "",
+        "lastDailyCaseDate": "",
+        "lastFreePlayCaseDate": "2026-08-22"
+    }
+}

@@ -140,7 +140,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      x_square_cross_close_icon_184547_0: 4199107582612276893
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

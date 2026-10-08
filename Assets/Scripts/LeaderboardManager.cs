@@ -1,8 +1,8 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace WordleGame
+namespace GuessWordGame
 {
     public class LeaderboardManager : MonoBehaviour
     {
@@ -32,7 +32,7 @@ namespace WordleGame
             }
 
             List<LeaderboardEntry> entries = GetBotEntries(category);
-            entries.Add(new LeaderboardEntry("Âû", playerScore, true));
+            entries.Add(new LeaderboardEntry("Ð’Ñ‹", playerScore, true));
 
             return entries.OrderByDescending(e => e.score).ToList();
         }
